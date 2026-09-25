@@ -1,0 +1,2209 @@
+{
+  "name": "Refugio Cuatro Patitas y Media - Mesa de Entrada IA",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Refugio Cuatro Patitas y Media",
+        "formDescription": "Cuéntanos en qué podemos ayudarte. Recibimos solicitudes de adopción, donación, servicios médicos e ingreso de animales.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre completo",
+              "fieldName": "nombre",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Correo electrónico",
+              "fieldType": "email",
+              "fieldName": "email"
+            },
+            {
+              "fieldLabel": "Teléfono",
+              "fieldName": "telefono"
+            },
+            {
+              "fieldLabel": "Ciudad",
+              "fieldName": "ciudad"
+            },
+            {
+              "fieldLabel": "Tipo de vivienda",
+              "fieldType": "dropdown",
+              "fieldName": "tipo_vivienda",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Casa con patio"
+                  },
+                  {
+                    "option": "Casa sin patio"
+                  },
+                  {
+                    "option": "Departamento"
+                  },
+                  {
+                    "option": "Rancho o terreno"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Otras mascotas en casa",
+              "fieldType": "textarea",
+              "fieldName": "otras_mascotas"
+            },
+            {
+              "fieldLabel": "Horas que pasas fuera de casa al día",
+              "fieldType": "number",
+              "fieldName": "horas_fuera"
+            },
+            {
+              "fieldLabel": "Cuéntanos en qué podemos ayudarte",
+              "fieldType": "textarea",
+              "fieldName": "mensaje",
+              "placeholder": "Escribe con tus palabras lo que necesitas"
+            },
+            {
+              "fieldLabel": "Acepto el aviso de privacidad",
+              "fieldType": "dropdown",
+              "fieldName": "consentimiento",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Sí"
+                  },
+                  {
+                    "option": "No"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Enviar solicitud",
+          "path": "refugio-solicitudes",
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "Recibimos tu solicitud. Te contactaremos por correo."
+            }
+          }
+        }
+      },
+      "id": "3489f536-b5df-44e0-9ee4-fc72349e44e3",
+      "name": "Formulario Público de Solicitudes",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -1280,
+        96
+      ],
+      "webhookId": "b1d4a55f-b0a2-4189-95f2-d917d4b63d17"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "id_solicitud",
+              "value": "=SOL-{{ $now.toFormat(\"yyyyLLdd\") }}-{{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "nombre",
+              "value": "={{ ($json.nombre || \"\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "email",
+              "value": "={{ ($json.email || \"\").trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "a4",
+              "name": "telefono",
+              "value": "={{ ($json.telefono || \"\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "a5",
+              "name": "ciudad",
+              "value": "={{ ($json.ciudad || \"No especificada\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "a6",
+              "name": "tipo_vivienda",
+              "value": "={{ $json.tipo_vivienda || \"No especificado\" }}",
+              "type": "string"
+            },
+            {
+              "id": "a7",
+              "name": "otras_mascotas",
+              "value": "={{ ($json.otras_mascotas || \"No indicó\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "a8",
+              "name": "horas_fuera",
+              "value": "={{ Number($json.horas_fuera) || 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "a9",
+              "name": "mensaje",
+              "value": "={{ ($json.mensaje || \"\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "a10",
+              "name": "consentimiento",
+              "value": "={{ $json.consentimiento === \"Sí\" || $json.consentimiento === \"Si\" }}",
+              "type": "boolean"
+            },
+            {
+              "id": "a11",
+              "name": "canal",
+              "value": "Formulario Web",
+              "type": "string"
+            },
+            {
+              "id": "a12",
+              "name": "fecha_recepcion",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "a13",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e5b1bf4d-a240-4a59-a7f1-49d6e7d929a7",
+      "name": "Normalizar Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -928,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.email }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.mensaje }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c3",
+              "leftValue": "={{ $json.consentimiento }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "9f82200e-cbb5-463f-b153-2bb0061d2f87",
+      "name": "Validar Datos Mínimos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -704,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "5c2837a9-c83a-4c3d-b8e8-585cc3143de9"
+        },
+        "title": "={{ $json.nombre }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Email|email",
+              "emailValue": "={{ $json.email ? $json.email : null }}"
+            },
+            {
+              "key": "Teléfono|phone_number",
+              "phoneValue": "={{ $json.telefono ? $json.telefono : null }}"
+            },
+            {
+              "key": "Ciudad|rich_text",
+              "textContent": "={{ $json.ciudad }}"
+            },
+            {
+              "key": "Tipo de Vivienda|select",
+              "selectValue": "={{ $json.tipo_vivienda }}"
+            },
+            {
+              "key": "Otras Mascotas|rich_text",
+              "textContent": "={{ $json.otras_mascotas }}"
+            },
+            {
+              "key": "Horas Fuera de Casa|number",
+              "numberValue": "={{ $json.horas_fuera }}"
+            },
+            {
+              "key": "Historial|select",
+              "selectValue": "Nuevo"
+            },
+            {
+              "key": "Consentimiento Datos|checkbox",
+              "checkboxValue": "={{ $json.consentimiento }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "af3454b9-4a0b-43ac-8048-97a11392f366",
+      "name": "Registrar Solicitante",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        -352,
+        80
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "c9d950b8-4beb-49fb-8996-21a6d66fa949"
+        },
+        "title": "={{ $(\"Normalizar Payload\").item.json.id_solicitud }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Estado|select",
+              "selectValue": "Pendiente"
+            },
+            {
+              "key": "Canal|select",
+              "selectValue": "={{ $(\"Normalizar Payload\").item.json.canal }}"
+            },
+            {
+              "key": "Mensaje Original|rich_text",
+              "textContent": "={{ $(\"Normalizar Payload\").item.json.mensaje }}"
+            },
+            {
+              "key": "Solicitante|relation",
+              "relationValue": [
+                "={{ $json.id }}"
+              ]
+            },
+            {
+              "key": "Fecha Recepción|date",
+              "date": "={{ $(\"Normalizar Payload\").item.json.fecha_recepcion }}"
+            },
+            {
+              "key": "Reintentos|number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ff6578b9-b887-42fd-bd62-a02cd74c7b04",
+      "name": "Crear Solicitud Pendiente",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        80
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres el clasificador de la mesa de entrada de un refugio de animales que recibe perros, gatos y cuyos.\n\nClasifica el mensaje del solicitante en exactamente uno de estos tipos:\n- Adopción: quiere llevarse un animal del refugio a su casa.\n- Donación: ofrece dinero, alimento, medicamento o insumos.\n- Servicio Médico: pide esterilización, vacunación o atención veterinaria para un animal que YA es suyo.\n- Ingreso de Animal: quiere entregar un animal al refugio o reporta uno en la calle.\n- Sin Clasificar: el mensaje no permite determinar la intención.\n\nReglas:\n1. confianza es un NÚMERO entre 0 y 1, nunca texto entre comillas.\n2. urgencia es Alta solo si hay riesgo inmediato para la vida o la integridad de un animal.\n3. especie debe ser Perro, Gato, Cuyo o No especificada.\n4. monto_donacion es un NÚMERO en pesos mexicanos; usa 0 si no aplica o no se menciona.\n5. Si el mensaje es ambiguo o genérico, devuelve tipo \"Sin Clasificar\" con confianza menor a 0.7.\n\nEjemplos:\nMensaje: \"quiero un perro\" -> tipo Sin Clasificar, confianza 0.45\nMensaje: \"mi gata ya tuvo dos camadas, cuándo hay campaña de esterilización\" -> tipo Servicio Médico, confianza 0.97\nMensaje: \"hay un perro atropellado en Periférico\" -> tipo Ingreso de Animal, urgencia Alta, confianza 0.99\n\nDATOS DEL MENSAJE (no incluyas datos de contacto en tu respuesta):\nMensaje: {{ $(\"Normalizar Payload\").item.json.mensaje }}\nCiudad: {{ $(\"Normalizar Payload\").item.json.ciudad }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "id": "4ec2abe1-e3fd-434c-9dbc-319be3036b42",
+      "name": "Clasificador de Intención",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        208,
+        80
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {
+          "maxTokensToSample": 1000,
+          "temperature": 0
+        }
+      },
+      "id": "8f68b1d2-2486-4968-92ee-91bb6673600e",
+      "name": "Claude Haiku - Modelo Económico",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        176,
+        288
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\"tipo\":\"Adopcion\",\"especie\":\"Gato\",\"urgencia\":\"Baja\",\"confianza\":0.96,\"resumen\":\"Resumen en una o dos frases\",\"razonamiento\":\"Por que se eligio ese tipo\",\"monto_donacion\":0}"
+      },
+      "id": "1d20c080-0674-4163-a7e9-f237c422cd65",
+      "name": "Esquema de Clasificación",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        336,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cc1",
+              "leftValue": "={{ Number($json.output.confianza) }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              },
+              "rightValue": 0.7
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3142e4ed-7b98-47f2-945a-9e9ce9367590",
+      "name": "Validar Confianza",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r1",
+                    "leftValue": "={{ $json.output.tipo }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "rightValue": "Adop"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r2",
+                    "leftValue": "={{ $json.output.tipo }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "rightValue": "Dona"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r3",
+                    "leftValue": "={{ $json.output.tipo }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "rightValue": "Servicio"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r4",
+                    "leftValue": "={{ $json.output.tipo }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "rightValue": "Ingreso"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Sin Clasificar"
+        }
+      },
+      "id": "b42c683f-3873-4307-9c02-4ed4e8318734",
+      "name": "Enrutar por Tipo",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "getAll",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "b0c2bf1f-a107-4eab-990e-bae4aee9f9b5"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Estado|select",
+              "condition": "equals"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1d4a0750-b685-49a1-9860-5cbe6191815b",
+      "name": "Consultar Animales Disponibles",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        -560
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres el evaluador de adopciones del refugio Cuatro Patitas y Media. Tu trabajo es decidir si el perfil del solicitante es compatible con los animales disponibles.\n\nREGLA CRÍTICA: los requisitos escritos en la ficha de cada animal son obligatorios. Si el solicitante incumple uno solo, ese animal se descarta. Nunca inventes requisitos que no estén en la ficha.\n\nCÓMO DECIDIR EL VEREDICTO:\n1. Si el solicitante nombra un animal en concreto, el veredicto es SOBRE ESE ANIMAL. Si incumple aunque sea uno de sus requisitos, el veredicto es NO APTO, aunque otro animal del catálogo sí encaje. Encontrar un sustituto NO convierte el veredicto en APTO.\n2. Si además existe un animal alternativo compatible, mencionalo al final del dictamen con la frase \"Alternativa sugerida:\" y explica brevemente por qué encaja. La decisión de ofrecerla es del refugio, no tuya.\n3. Si el solicitante no nombra ningún animal y solo describe lo que busca, el veredicto es APTO si al menos un animal disponible cumple todos sus requisitos, y NO APTO si ninguno cumple.\n\nscore es un NÚMERO entero de 0 a 100 que mide qué tan bien encaja el perfil con el animal sobre el que estas dictaminando.\n\nLÍMITES DE LONGITUD (oblígate a respetarlos, la respuesta se trunca si te excedes):\n- animales_recomendados: máximo 200 caracteres. Si el veredicto es NO APTO, escribe \"Ninguno\" y, si aplica, el nombre de la alternativa.\n- dictamen: máximo 700 caracteres. Ve al punto.\n- animales_descartados: máximo 600 caracteres. Menciona únicamente los animales de la misma especie que pidió el solicitante; no enumeres el catálogo completo.\n\nPERFIL DEL SOLICITANTE:\nTipo de vivienda: {{ $(\"Normalizar Payload\").first().json.tipo_vivienda }}\nOtras mascotas: {{ $(\"Normalizar Payload\").first().json.otras_mascotas }}\nHoras fuera de casa al día: {{ $(\"Normalizar Payload\").first().json.horas_fuera }}\nLo que pide con sus palabras: {{ $(\"Normalizar Payload\").first().json.mensaje }}\nResumen de la clasificación previa: {{ $(\"Clasificador de Intención\").first().json.output.resumen }}\nEspecie de interés: {{ $(\"Clasificador de Intención\").first().json.output.especie }}\n\nCATÁLOGO DE ANIMALES DISPONIBLES (recuperado de la base de datos en esta ejecución):\n{{ JSON.stringify($(\"Consultar Animales Disponibles\").all().map(i => i.json)) }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "id": "4f794426-ff37-413f-bac6-f126719aa344",
+      "name": "Evaluador de Compatibilidad RAG",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2000,
+        -560
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "executeOnce": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-5",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 5"
+        },
+        "options": {
+          "maxTokensToSample": 4000,
+          "temperature": 0
+        }
+      },
+      "id": "af416266-e403-44bd-9c45-9b898f3f7ba5",
+      "name": "Claude Sonnet - Modelo de Razonamiento",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        1984,
+        -352
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\"veredicto\":\"APTO\",\"score\":92,\"animales_recomendados\":\"Tomas, Lupita\",\"dictamen\":\"Justificacion citando los requisitos de la ficha de cada animal\",\"animales_descartados\":\"Por que no aplican los demas\"}"
+      },
+      "id": "4490b568-105f-4a97-a847-cd373296a8d5",
+      "name": "Esquema de Dictamen",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2144,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").first().json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Tipo|select",
+              "selectValue": "Adopción"
+            },
+            {
+              "key": "Estado|select",
+              "selectValue": "Esperando Aprobación"
+            },
+            {
+              "key": "Urgencia|select",
+              "selectValue": "={{ $(\"Clasificador de Intención\").first().json.output.urgencia }}"
+            },
+            {
+              "key": "Confianza IA|number",
+              "numberValue": "={{ Number($(\"Clasificador de Intención\").first().json.output.confianza) }}"
+            },
+            {
+              "key": "Resumen IA|rich_text",
+              "textContent": "={{ $(\"Clasificador de Intención\").first().json.output.resumen }}"
+            },
+            {
+              "key": "Dictamen IA|rich_text",
+              "textContent": "={{ $json.output.veredicto }} - {{ $json.output.dictamen }} Descartados: {{ $json.output.animales_descartados }}"
+            },
+            {
+              "key": "Score Compatibilidad|number",
+              "numberValue": "={{ Number($json.output.score) }}"
+            },
+            {
+              "key": "Modelo IA|select",
+              "selectValue": "claude-sonnet-4-5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "51cd15d9-c4a7-4dd1-b89f-c9f05c3cde23",
+      "name": "Guardar Dictamen y Esperar Aprobación",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        2464,
+        -736
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "fmvhbt5683@betterr.org",
+        "subject": "=[APROBACIÓN] {{ $(\"Normalizar Payload\").first().json.id_solicitud }} - Dictamen {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.veredicto }} (score {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.score }})",
+        "message": "=Solicitud: {{ $(\"Normalizar Payload\").first().json.id_solicitud }}\nSolicitante: {{ $(\"Normalizar Payload\").first().json.nombre }}\nVivienda: {{ $(\"Normalizar Payload\").first().json.tipo_vivienda }} | Otras mascotas: {{ $(\"Normalizar Payload\").first().json.otras_mascotas }} | Horas fuera: {{ $(\"Normalizar Payload\").first().json.horas_fuera }}\n\nDICTAMEN DE LA IA: {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.veredicto }} (score {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.score }}/100)\nAnimales recomendados: {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.animales_recomendados }}\n\nJustificación: {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.dictamen }}\n\nDescartados: {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.animales_descartados }}\n\nEl sistema NO ha contactado al solicitante. Nada sale hasta que apruebes aquí.",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "Aprobar adopcion",
+            "disapproveLabel": "Rechazar"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 3,
+              "resumeUnit": "days"
+            }
+          }
+        }
+      },
+      "id": "c54675e5-786d-4aeb-b71a-fcf2f1c3d95a",
+      "name": "Aprobación Humana de Adopción",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2672,
+        -736
+      ],
+      "webhookId": "06dcbc33-30bc-4263-879f-b1d54fe69606",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NJsXO7I8jPeHvXz0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d1",
+              "leftValue": "={{ $json.data.approved }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "d81ba802-83ec-4876-ba75-1a2509e9e844",
+      "name": "Decisión Humana",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2896,
+        -736
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $(\"Normalizar Payload\").first().json.email }}",
+        "subject": "=Tu solicitud de adopción fue aprobada - {{ $(\"Normalizar Payload\").first().json.id_solicitud }}",
+        "emailType": "text",
+        "message": "=Hola {{ $(\"Normalizar Payload\").first().json.nombre }}:\n\nBuenas noticias: tu solicitud de adopción fue revisada y aprobada por nuestro equipo.\n\nAnimal o animales asignados: {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.animales_recomendados }}\n\n{{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.dictamen }}\n\nTe contactaremos en las próximas 48 horas para agendar la visita domiciliaria y la entrega.\n\nRefugio Cuatro Patitas y Media\nFolio: {{ $(\"Normalizar Payload\").first().json.id_solicitud }}",
+        "options": {}
+      },
+      "id": "1fd9d233-0535-4bac-a77e-36c7b7f9001e",
+      "name": "Notificar Adopción Aprobada",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3456,
+        -752
+      ],
+      "webhookId": "6ed37538-8d0c-4f64-bf31-72633cb042a2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NJsXO7I8jPeHvXz0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").first().json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Estado|select",
+              "selectValue": "Aprobado por Humano"
+            },
+            {
+              "key": "Aprobado Por|rich_text",
+              "textContent": "Coordinación de Adopciones (vía correo de aprobación)"
+            },
+            {
+              "key": "Fecha Resolución|date",
+              "date": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "31db4bd5-f0bc-49e6-b5c0-3c6b97b3fe0c",
+      "name": "Marcar Aprobado por Humano",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        3680,
+        -752
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $(\"Normalizar Payload\").first().json.email }}",
+        "subject": "=Sobre tu solicitud de adopción - {{ $(\"Normalizar Payload\").first().json.id_solicitud }}",
+        "emailType": "text",
+        "message": "=Hola {{ $(\"Normalizar Payload\").first().json.nombre }}:\n\nGracias por querer adoptar. En esta ocasión tu solicitud no procedió.\n\nMotivo: {{ $(\"Evaluador de Compatibilidad RAG\").first().json.output.dictamen }}\n\nEsto no significa que no puedas adoptar más adelante. Nuestro catálogo cambia cada semana y con gusto te avisamos cuando ingrese un animal compatible con tu hogar.\n\nRefugio Cuatro Patitas y Media\nFolio: {{ $(\"Normalizar Payload\").first().json.id_solicitud }}",
+        "options": {}
+      },
+      "id": "37fb45fd-18e6-4367-aaf5-723ddd277676",
+      "name": "Notificar No Procedencia",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3440,
+        -368
+      ],
+      "webhookId": "1c266915-4845-465e-ba6e-47ea7f1f2533",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NJsXO7I8jPeHvXz0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").first().json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Estado|select",
+              "selectValue": "Rechazado"
+            },
+            {
+              "key": "Aprobado Por|rich_text",
+              "textContent": "Coordinación de Adopciones (rechazo confirmado por una persona)"
+            },
+            {
+              "key": "Fecha Resolución|date",
+              "date": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "65afd8e2-8db1-4e7e-8445-f477812afc0b",
+      "name": "Marcar Rechazado",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        3664,
+        -368
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "3741297b-1988-44b5-84f8-370290173756"
+        },
+        "title": "=Fallo del evaluador de compatibilidad - {{ $(\"Normalizar Payload\").first().json.id_solicitud }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Execution ID|rich_text",
+              "textContent": "={{ $execution.id }}"
+            },
+            {
+              "key": "Nodo|rich_text",
+              "textContent": "Evaluador de Compatibilidad RAG"
+            },
+            {
+              "key": "Resultado|select",
+              "selectValue": "Error API IA"
+            },
+            {
+              "key": "Severidad|select",
+              "selectValue": "Crítico"
+            },
+            {
+              "key": "Mensaje|rich_text",
+              "textContent": "=El evaluador falló tras tres reintentos: {{ JSON.stringify($json.error || $json) }}. No se envió ningún correo al solicitante."
+            },
+            {
+              "key": "Solicitud|relation",
+              "relationValue": [
+                "={{ $(\"Crear Solicitud Pendiente\").first().json.id }}"
+              ]
+            },
+            {
+              "key": "Timestamp|date",
+              "date": "={{ $now.toISO() }}"
+            },
+            {
+              "key": "Reintento|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fc6d0e9a-82b6-4832-bc0d-704b3f50fc71",
+      "name": "Registrar Error del Evaluador",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        3184,
+        160
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Tipo|select",
+              "selectValue": "Donación"
+            },
+            {
+              "key": "Estado|select",
+              "selectValue": "Clasificado por IA"
+            },
+            {
+              "key": "Confianza IA|number",
+              "numberValue": "={{ Number($json.output.confianza) }}"
+            },
+            {
+              "key": "Resumen IA|rich_text",
+              "textContent": "={{ $json.output.resumen }}"
+            },
+            {
+              "key": "Monto Donación MXN|number",
+              "numberValue": "={{ Number($json.output.monto_donacion) || 0 }}"
+            },
+            {
+              "key": "Modelo IA|select",
+              "selectValue": "claude-haiku-4-5"
+            },
+            {
+              "key": "Fecha Resolución|date",
+              "date": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "16d5aad6-428e-4f55-9ebe-23dcb76def0e",
+      "name": "Registrar Donación",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        -32
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $(\"Normalizar Payload\").item.json.email }}",
+        "subject": "=Gracias por tu donación - {{ $(\"Normalizar Payload\").item.json.id_solicitud }}",
+        "emailType": "text",
+        "message": "=Hola {{ $(\"Normalizar Payload\").item.json.nombre }}:\n\nRecibimos tu intención de donar y te lo agradecemos de corazón.\n\nResumen de tu mensaje: {{ $(\"Clasificador de Intención\").item.json.output.resumen }}\n\nDatos para depósito:\nBanco: BBVA México\nCuenta CLABE: 012180001234567895\nTitular: Refugio Cuatro Patitas y Media A.C.\nReferencia: {{ $(\"Normalizar Payload\").item.json.id_solicitud }}\n\nSi necesitas recibo deducible de impuestos, responde este correo con tu constancia de situación fiscal.\n\nRefugio Cuatro Patitas y Media",
+        "options": {}
+      },
+      "id": "1c7fb228-ce3f-4111-a579-f6b15903ee3e",
+      "name": "Acuse de Donación",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1984,
+        -32
+      ],
+      "webhookId": "d266951f-c642-48ce-ae56-402fc566a4f5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NJsXO7I8jPeHvXz0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Tipo|select",
+              "selectValue": "Servicio Médico"
+            },
+            {
+              "key": "Estado|select",
+              "selectValue": "Clasificado por IA"
+            },
+            {
+              "key": "Urgencia|select",
+              "selectValue": "={{ $json.output.urgencia }}"
+            },
+            {
+              "key": "Confianza IA|number",
+              "numberValue": "={{ Number($json.output.confianza) }}"
+            },
+            {
+              "key": "Resumen IA|rich_text",
+              "textContent": "={{ $json.output.resumen }}"
+            },
+            {
+              "key": "Modelo IA|select",
+              "selectValue": "claude-haiku-4-5"
+            },
+            {
+              "key": "Fecha Resolución|date",
+              "date": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad771029-8ad6-4f6c-9cf7-c236841ef5f2",
+      "name": "Registrar Lista de Espera Médica",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1744,
+        336
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $(\"Normalizar Payload\").item.json.email }}",
+        "subject": "=Tu solicitud de servicio médico - {{ $(\"Normalizar Payload\").item.json.id_solicitud }}",
+        "emailType": "text",
+        "message": "=Hola {{ $(\"Normalizar Payload\").item.json.nombre }}:\n\nRegistramos tu solicitud de servicio médico con urgencia {{ $(\"Clasificador de Intención\").item.json.output.urgencia }}.\n\nResumen: {{ $(\"Clasificador de Intención\").item.json.output.resumen }}\n\nRequisitos para el día de la cita:\n- Ayuno de sólido y líquido de 8 horas previas si se trata de esterilización.\n- Cartilla de vacunación si la tienes.\n- Transportadora para gatos y cuyos; correa y bozal para perros de talla grande.\n\nTe confirmamos fecha en cuanto abra la siguiente campaña.\n\nRefugio Cuatro Patitas y Media",
+        "options": {}
+      },
+      "id": "e150b78f-8e2d-4e91-ad88-448d69fea3c7",
+      "name": "Acuse de Servicio Médico",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1968,
+        336
+      ],
+      "webhookId": "20ef512e-bb9e-4c27-9ae8-c615233dd667",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NJsXO7I8jPeHvXz0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Tipo|select",
+              "selectValue": "Ingreso de Animal"
+            },
+            {
+              "key": "Estado|select",
+              "selectValue": "Esperando Aprobación"
+            },
+            {
+              "key": "Urgencia|select",
+              "selectValue": "={{ $json.output.urgencia }}"
+            },
+            {
+              "key": "Confianza IA|number",
+              "numberValue": "={{ Number($json.output.confianza) }}"
+            },
+            {
+              "key": "Resumen IA|rich_text",
+              "textContent": "={{ $json.output.resumen }}"
+            },
+            {
+              "key": "Dictamen IA|rich_text",
+              "textContent": "=Especie reportada: {{ $json.output.especie }}. Razonamiento del clasificador: {{ $json.output.razonamiento }}"
+            },
+            {
+              "key": "Modelo IA|select",
+              "selectValue": "claude-haiku-4-5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bc69bffe-33e2-45b5-b777-07d67eca1bd0",
+      "name": "Guardar Reporte de Ingreso",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1744,
+        704
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "fmvhbt5683@betterr.org",
+        "subject": "=[INGRESO {{ $(\"Clasificador de Intención\").item.json.output.urgencia }}] {{ $(\"Normalizar Payload\").item.json.id_solicitud }} - {{ $(\"Clasificador de Intención\").item.json.output.especie }}",
+        "message": "=Solicitud de ingreso de animal: {{ $(\"Normalizar Payload\").item.json.id_solicitud }}\nReporta: {{ $(\"Normalizar Payload\").item.json.nombre }} | Ciudad: {{ $(\"Normalizar Payload\").item.json.ciudad }}\nEspecie: {{ $(\"Clasificador de Intención\").item.json.output.especie }} | Urgencia: {{ $(\"Clasificador de Intención\").item.json.output.urgencia }}\n\nResumen: {{ $(\"Clasificador de Intención\").item.json.output.resumen }}\n\nMensaje original: {{ $(\"Normalizar Payload\").item.json.mensaje }}\n\nAutoriza solo si hay cupo en cuarentena. El sistema no ha respondido a quien reporta.",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "Autorizar ingreso",
+            "disapproveLabel": "Sin cupo"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 12
+            }
+          }
+        }
+      },
+      "id": "8b8f28c4-4640-4e10-a98b-1ad7c47aa2da",
+      "name": "Autorización Humana de Ingreso",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1968,
+        704
+      ],
+      "webhookId": "c8fb77d8-6bd3-4436-9411-d1b3b0090f37",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NJsXO7I8jPeHvXz0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Estado|select",
+              "selectValue": "={{ $json.data.approved ? \"Aprobado por Humano\" : \"Rechazado\" }}"
+            },
+            {
+              "key": "Aprobado Por|rich_text",
+              "textContent": "Guardia Veterinaria (vía correo de aprobación)"
+            },
+            {
+              "key": "Fecha Resolución|date",
+              "date": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "59325263-ba72-44c4-8226-e34bee74c666",
+      "name": "Registrar Resolución de Ingreso",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        2176,
+        704
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $(\"Normalizar Payload\").item.json.email }}",
+        "subject": "=Resolución de tu reporte - {{ $(\"Normalizar Payload\").item.json.id_solicitud }}",
+        "emailType": "text",
+        "message": "=Hola {{ $(\"Normalizar Payload\").item.json.nombre }}:\n\n{{ $(\"Autorización Humana de Ingreso\").item.json.data.approved ? \"Autorizamos el ingreso. Nuestra brigada te contactará para coordinar la recepción del animal.\" : \"Por ahora no tenemos cupo físico para recibir al animal. Te inscribimos en el programa de reubicación asistida: difundimos su ficha en nuestras redes sin que tenga que ingresar al refugio.\" }}\n\nFolio: {{ $(\"Normalizar Payload\").item.json.id_solicitud }}\n\nRefugio Cuatro Patitas y Media",
+        "options": {}
+      },
+      "id": "58a086dc-de9a-4670-a4ba-ac60685b5aff",
+      "name": "Notificar Resolución de Ingreso",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        704
+      ],
+      "webhookId": "58ea0d7e-4a41-4731-8081-d98da099a0d4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NJsXO7I8jPeHvXz0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "3741297b-1988-44b5-84f8-370290173756"
+        },
+        "title": "=Tipo no reconocido por el router - {{ $(\"Normalizar Payload\").item.json.id_solicitud }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Execution ID|rich_text",
+              "textContent": "={{ $execution.id }}"
+            },
+            {
+              "key": "Nodo|rich_text",
+              "textContent": "Enrutar por Tipo"
+            },
+            {
+              "key": "Resultado|select",
+              "selectValue": "Baja Confianza"
+            },
+            {
+              "key": "Severidad|select",
+              "selectValue": "Advertencia"
+            },
+            {
+              "key": "Mensaje|rich_text",
+              "textContent": "=El modelo devolvió tipo=\"{{ $json.output.tipo }}\" con confianza {{ $json.output.confianza }}, que no coincide con ninguna ruta configurada. Capturado por la salida de respaldo del Switch en lugar de perderse."
+            },
+            {
+              "key": "Solicitud|relation",
+              "relationValue": [
+                "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+              ]
+            },
+            {
+              "key": "Timestamp|date",
+              "date": "={{ $now.toISO() }}"
+            },
+            {
+              "key": "Reintento|checkbox"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "699fbc93-de12-4758-afda-f9a9b031547a",
+      "name": "Registrar Tipo No Reconocido",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1232,
+        560
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "3741297b-1988-44b5-84f8-370290173756"
+        },
+        "title": "=Clasificacion por debajo del umbral - {{ $(\"Normalizar Payload\").item.json.id_solicitud }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Execution ID|rich_text",
+              "textContent": "={{ $execution.id }}"
+            },
+            {
+              "key": "Nodo|rich_text",
+              "textContent": "IF - Validar Confianza"
+            },
+            {
+              "key": "Resultado|select",
+              "selectValue": "Baja Confianza"
+            },
+            {
+              "key": "Severidad|select",
+              "selectValue": "Advertencia"
+            },
+            {
+              "key": "Mensaje|rich_text",
+              "textContent": "=Confianza {{ $json.output.confianza }}, menor al umbral de 0.70. Se detuvo el enrutamiento automático y se envió a revisión manual. No se contactó al solicitante."
+            },
+            {
+              "key": "Solicitud|relation",
+              "relationValue": [
+                "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+              ]
+            },
+            {
+              "key": "Timestamp|date",
+              "date": "={{ $now.toISO() }}"
+            },
+            {
+              "key": "Reintento|checkbox"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c62f446f-4fa0-402b-960f-748b4377888b",
+      "name": "Registrar Baja Confianza",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1264,
+        928
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Estado|select",
+              "selectValue": "Esperando Aprobación"
+            },
+            {
+              "key": "Tipo|select",
+              "selectValue": "Sin Clasificar"
+            },
+            {
+              "key": "Confianza IA|number",
+              "numberValue": "={{ Number($(\"Clasificador de Intención\").item.json.output.confianza) }}"
+            },
+            {
+              "key": "Resumen IA|rich_text",
+              "textContent": "={{ $(\"Clasificador de Intención\").item.json.output.resumen }}"
+            },
+            {
+              "key": "Dictamen IA|rich_text",
+              "textContent": "=Confianza por debajo del umbral de 0.70. Enrutado a revisión manual. Razonamiento del modelo: {{ $(\"Clasificador de Intención\").item.json.output.razonamiento }}"
+            },
+            {
+              "key": "Modelo IA|select",
+              "selectValue": "claude-haiku-4-5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8c189362-f821-4ead-a457-1f4a37bc7251",
+      "name": "Enviar a Revisión Manual",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1488,
+        928
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "3741297b-1988-44b5-84f8-370290173756"
+        },
+        "title": "=Fallo definitivo de clasificacion - {{ $(\"Normalizar Payload\").item.json.id_solicitud }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Execution ID|rich_text",
+              "textContent": "={{ $execution.id }}"
+            },
+            {
+              "key": "Nodo|rich_text",
+              "textContent": "Clasificador de Intención"
+            },
+            {
+              "key": "Resultado|select",
+              "selectValue": "Error API IA"
+            },
+            {
+              "key": "Severidad|select",
+              "selectValue": "Crítico"
+            },
+            {
+              "key": "Mensaje|rich_text",
+              "textContent": "=Agotados los tres reintentos. Error: {{ JSON.stringify($json.error || $json) }}. La solicitud conserva el mensaje original íntegro para reprocesamiento manual."
+            },
+            {
+              "key": "Solicitud|relation",
+              "relationValue": [
+                "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+              ]
+            },
+            {
+              "key": "Timestamp|date",
+              "date": "={{ $now.toISO() }}"
+            },
+            {
+              "key": "Reintento|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "391089e6-6208-406d-9e42-8bef6d8751b4",
+      "name": "Registrar Error de API IA",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        624,
+        928
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $(\"Crear Solicitud Pendiente\").item.json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Estado|select",
+              "selectValue": "Error"
+            },
+            {
+              "key": "Tipo|select",
+              "selectValue": "Sin Clasificar"
+            },
+            {
+              "key": "Modelo IA|select",
+              "selectValue": "ninguno"
+            },
+            {
+              "key": "Reintentos|number",
+              "numberValue": 3
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2a0b0ba6-415a-4e6a-97e0-430fa38e65e3",
+      "name": "Marcar Solicitud en Error",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        848,
+        928
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "3741297b-1988-44b5-84f8-370290173756"
+        },
+        "title": "=Validacion de datos minimos fallida - {{ $json.id_solicitud }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Execution ID|rich_text",
+              "textContent": "={{ $json.execution_id }}"
+            },
+            {
+              "key": "Nodo|rich_text",
+              "textContent": "IF - Validar Datos Mínimos"
+            },
+            {
+              "key": "Resultado|select",
+              "selectValue": "Dato Faltante"
+            },
+            {
+              "key": "Severidad|select",
+              "selectValue": "Advertencia"
+            },
+            {
+              "key": "Mensaje|rich_text",
+              "textContent": "=Campos ausentes o inválidos. email=\"{{ $json.email }}\" mensaje_vacío={{ $json.mensaje.length === 0 }} consentimiento={{ $json.consentimiento }}. El flujo se detuvo antes del nodo de IA: cero tokens consumidos."
+            },
+            {
+              "key": "Timestamp|date",
+              "date": "={{ $now.toISO() }}"
+            },
+            {
+              "key": "Reintento|checkbox"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1f863c0d-9a00-47f2-b116-0d6ac373eb7e",
+      "name": "Registrar Dato Faltante",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        -368,
+        496
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "shCqGNCoHjSOShXK",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Mesa de Entrada Única — Refugio Cuatro Patitas y Media\n\nUn formulario público recibe TODAS las solicitudes en texto libre. Un modelo económico clasifica la intención y extrae entidades; el router envía cada tipo a su ruta. Adopción e Ingreso llevan procesamiento profundo con un modelo de razonamiento y validación humana antes de contactar a nadie.\n\n**Anti-bucle:** el disparador es un formulario externo, no un sondeo sobre la propia base de Solicitudes, de modo que el flujo no puede autodispararse.\n\n**Minimización de datos:** al clasificador solo se le envía el mensaje y la ciudad. El correo y el teléfono nunca salen hacia la API de IA; se recuperan hasta el nodo de Gmail.\n\n**Comparación de tipos:** la compuerta de confianza castea con Number() antes de comparar contra 0.70, para que un \"0.85\" devuelto como texto no rompa el filtro en silencio.",
+        "height": 240,
+        "width": 672,
+        "color": 4
+      },
+      "id": "b7953ebb-c407-4e3a-a8f7-2d9569ac04a5",
+      "name": "Sticky Note 1a77b667",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        352
+      ]
+    }
+  ],
+  "pinData": {
+    "Formulario Público de Solicitudes": [
+      {
+        "json": {
+          "nombre": "Mariana Escobar",
+          "email": "fmvhbt5683@betterr.org",
+          "telefono": "",
+          "ciudad": "",
+          "tipo_vivienda": "Departamento",
+          "otras_mascotas": "Ninguna",
+          "horas_fuera": 9,
+          "mensaje": "Vivo en departamento con mi esposo, los dos trabajamos de 9 a 6. Tenemos mallas de protección en todas las ventanas. Nos gustaría un gato tranquilo que no sufra estando solo el día.",
+          "consentimiento": "Sí",
+          "submittedAt": "2026-09-24T19:55:06.188-06:00",
+          "formMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Normalizar Payload": {
+      "main": [
+        [
+          {
+            "node": "Validar Datos Mínimos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Solicitante": {
+      "main": [
+        [
+          {
+            "node": "Crear Solicitud Pendiente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Solicitud Pendiente": {
+      "main": [
+        [
+          {
+            "node": "Clasificador de Intención",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Confianza": {
+      "main": [
+        [
+          {
+            "node": "Enrutar por Tipo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Baja Confianza",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrutar por Tipo": {
+      "main": [
+        [
+          {
+            "node": "Consultar Animales Disponibles",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Donación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Lista de Espera Médica",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Guardar Reporte de Ingreso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Tipo No Reconocido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Animales Disponibles": {
+      "main": [
+        [
+          {
+            "node": "Evaluador de Compatibilidad RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluador de Compatibilidad RAG": {
+      "main": [
+        [
+          {
+            "node": "Guardar Dictamen y Esperar Aprobación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Error del Evaluador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Sonnet - Modelo de Razonamiento": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Evaluador de Compatibilidad RAG",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esquema de Dictamen": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Evaluador de Compatibilidad RAG",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notificar No Procedencia": {
+      "main": [
+        [
+          {
+            "node": "Marcar Rechazado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Reporte de Ingreso": {
+      "main": [
+        [
+          {
+            "node": "Autorización Humana de Ingreso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Baja Confianza": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Revisión Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Error de API IA": {
+      "main": [
+        [
+          {
+            "node": "Marcar Solicitud en Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formulario Público de Solicitudes": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Datos Mínimos": {
+      "main": [
+        [
+          {
+            "node": "Registrar Solicitante",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Dato Faltante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificador de Intención": {
+      "main": [
+        [
+          {
+            "node": "Validar Confianza",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Error de API IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Haiku - Modelo Económico": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Clasificador de Intención",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esquema de Clasificación": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Clasificador de Intención",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Dictamen y Esperar Aprobación": {
+      "main": [
+        [
+          {
+            "node": "Aprobación Humana de Adopción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aprobación Humana de Adopción": {
+      "main": [
+        [
+          {
+            "node": "Decisión Humana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decisión Humana": {
+      "main": [
+        [
+          {
+            "node": "Notificar Adopción Aprobada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notificar No Procedencia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notificar Adopción Aprobada": {
+      "main": [
+        [
+          {
+            "node": "Marcar Aprobado por Humano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Donación": {
+      "main": [
+        [
+          {
+            "node": "Acuse de Donación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Lista de Espera Médica": {
+      "main": [
+        [
+          {
+            "node": "Acuse de Servicio Médico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Autorización Humana de Ingreso": {
+      "main": [
+        [
+          {
+            "node": "Registrar Resolución de Ingreso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Resolución de Ingreso": {
+      "main": [
+        [
+          {
+            "node": "Notificar Resolución de Ingreso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "6d500f0d-8a7f-401b-a892-6c190d9226f0",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "d20e9f2d60ff7cac2f5dc1c75c0f767ae709469ec705311e193fb48355d99619"
+  },
+  "nodeGroups": [
+    {
+      "id": "851ef9b1-ef29-41c2-a265-f82f50c24eec",
+      "name": "Recepción y Validación",
+      "nodeIds": [
+        "e5b1bf4d-a240-4a59-a7f1-49d6e7d929a7",
+        "9f82200e-cbb5-463f-b153-2bb0061d2f87"
+      ],
+      "description": "Normaliza el payload del formulario y corta el flujo si faltan correo, mensaje o consentimiento, antes de gastar tokens."
+    },
+    {
+      "id": "689f572d-a42e-4a05-b88c-1d8c51b7cbed",
+      "name": "Clasificación IA",
+      "nodeIds": [
+        "4ec2abe1-e3fd-434c-9dbc-319be3036b42",
+        "8f68b1d2-2486-4968-92ee-91bb6673600e",
+        "1d20c080-0674-4163-a7e9-f237c422cd65"
+      ],
+      "description": "El modelo económico clasifica la intención y extrae entidades con salida estructurada. Tres reintentos y salida de error dedicada."
+    },
+    {
+      "id": "ce4e823f-4e19-431d-bcb5-c77ab7cee71c",
+      "name": "Recuperación RAG del Catálogo",
+      "nodeIds": [
+        "1d4a0750-b685-49a1-9860-5cbe6191815b",
+        "4f794426-ff37-413f-bac6-f126719aa344",
+        "af416266-e403-44bd-9c45-9b898f3f7ba5",
+        "4490b568-105f-4a97-a847-cd373296a8d5"
+      ],
+      "description": "Recupera las fichas de animales disponibles desde Notion y las inyecta en el prompt del modelo de razonamiento para evaluar compatibilidad."
+    },
+    {
+      "id": "8656479d-707a-48cc-843c-76fda899def5",
+      "name": "Validación Humana de Adopción",
+      "nodeIds": [
+        "51cd15d9-c4a7-4dd1-b89f-c9f05c3cde23",
+        "c54675e5-786d-4aeb-b71a-fcf2f1c3d95a",
+        "d81ba802-83ec-4876-ba75-1a2509e9e844"
+      ],
+      "description": "Guarda el dictamen, suspende la ejecución y espera a que una persona apruebe o rechace antes de contactar al solicitante."
+    },
+    {
+      "id": "bf2c23c2-9291-4e14-b670-0bcdd2736e1d",
+      "name": "Ruta Ingreso de Animal",
+      "nodeIds": [
+        "bc69bffe-33e2-45b5-b777-07d67eca1bd0",
+        "8b8f28c4-4640-4e10-a98b-1ad7c47aa2da",
+        "59325263-ba72-44c4-8226-e34bee74c666",
+        "58a086dc-de9a-4670-a4ba-ac60685b5aff"
+      ],
+      "description": "Evalúa la urgencia y espera la autorización de la guardia veterinaria antes de comprometer cupo en cuarentena."
+    },
+    {
+      "id": "76b4e8e1-69cf-4d39-b98e-aa3db1176c80",
+      "name": "Ruta Donación",
+      "nodeIds": [
+        "16d5aad6-428e-4f55-9ebe-23dcb76def0e",
+        "1c7fb228-ce3f-4111-a579-f6b15903ee3e"
+      ],
+      "description": "Registra el monto y envía acuse automático con los datos de depósito. Ruta ligera, sin validación humana."
+    },
+    {
+      "id": "5b5dcf23-dbfd-4636-b179-2059b0ab82c5",
+      "name": "Bitácora de Errores",
+      "nodeIds": [
+        "391089e6-6208-406d-9e42-8bef6d8751b4",
+        "2a0b0ba6-415a-4e6a-97e0-430fa38e65e3"
+      ],
+      "description": "Captura el fallo definitivo de la API de IA tras tres reintentos y deja la solicitud recuperable, sin perder el mensaje original."
+    },
+    {
+      "id": "6c51b9a8-cf3e-4fd1-9510-f459aebbcb96",
+      "name": "Registro en Notion",
+      "nodeIds": [
+        "af3454b9-4a0b-43ac-8048-97a11392f366",
+        "ff6578b9-b887-42fd-bd62-a02cd74c7b04"
+      ],
+      "description": "Crea o registra al solicitante y abre la solicitud en estado Pendiente antes de que intervenga la IA."
+    },
+    {
+      "id": "cc5ad5c4-9165-4e0f-9cad-bb5c237e258e",
+      "name": "Revisión Manual por Baja Confianza",
+      "nodeIds": [
+        "c62f446f-4fa0-402b-960f-748b4377888b",
+        "8c189362-f821-4ead-a457-1f4a37bc7251"
+      ],
+      "description": "Cuando la confianza del clasificador queda por debajo de 0.70 se registra el evento y la solicitud pasa a cola humana, sin contactar a nadie."
+    },
+    {
+      "id": "652b16e1-e9bd-4b4f-9706-26cf6d716024",
+      "name": "Resolución de Adopción Aprobada",
+      "nodeIds": [
+        "1fd9d233-0535-4bac-a77e-36c7b7f9001e",
+        "31db4bd5-f0bc-49e6-b5c0-3c6b97b3fe0c"
+      ],
+      "description": "Solo se ejecuta si una persona aprobó: envía el dictamen al adoptante y cierra la solicitud."
+    },
+    {
+      "id": "78e056e5-5e00-4157-a36f-f4deb05c4d85",
+      "name": "Resolución de Adopción Rechazada",
+      "nodeIds": [
+        "37fb45fd-18e6-4367-aaf5-723ddd277676",
+        "65afd8e2-8db1-4e7e-8445-f477812afc0b"
+      ],
+      "description": "Envía la respuesta de no procedencia con el motivo del dictamen y cierra la solicitud como rechazada."
+    },
+    {
+      "id": "843af6e6-0230-4bc7-b57d-a5606fe86726",
+      "name": "Ruta Servicio Médico",
+      "nodeIds": [
+        "ad771029-8ad6-4f6c-9cf7-c236841ef5f2",
+        "e150b78f-8e2d-4e91-ad88-448d69fea3c7"
+      ],
+      "description": "Registra la solicitud en lista de espera y envía acuse con los requisitos de ayuno. Ruta ligera, sin validación humana."
+    }
+  ],
+  "id": "GLdmpVnRZjTFgbQM",
+  "tags": []
+}
