@@ -14,7 +14,7 @@ Alejandra Cab Pérez · Septiembre 2026
 | Formulario público | https://fmvhbt5683.app.n8n.cloud/form/refugio-solicitudes |
 | Base de datos en Notion (modo lectura) | https://harvest-target-6cd.notion.site/CODERHOUSE-Refugio-Cuatro-Patitas-y-Media-3e54817126d2811b9fcfce3e5fac37f1 |
 | Dashboard de control | https://harvest-target-6cd.notion.site/Dashboard-de-Control-3e54817126d2812f866dd1bd839827f5 |
-| Video demo (3 min) | [`evidencias/video-demo.mp4`](https://github.com/alecab584-web/refugio-cuatro-patitas/blob/main/evidencias/video-demo.mp4) |
+| Video demo (3 min) | [Google Drive](https://drive.google.com/file/d/1oIxGAdLwIhHm81jByMneNVFKotztFYaP/view?usp=drive_link) |
 | Documentación técnica | [`docs/Entrega-Final-Refugio-Cuatro-Patitas.pdf`](docs/Entrega-Final-Refugio-Cuatro-Patitas.pdf) |
 
 ---
@@ -230,6 +230,7 @@ No se implementó por una decisión de riesgo: el cambio toca la rama que alimen
     ├── Test de Estrés_prueba-2-corte-datos-faltantes.png
     ├── Test de Estrés_prueba-3-baja-confianza.png
     ├── Test de Estrés_prueba-4-adopcion-rechazada.png
-    ├── Test de Estrés_prueba-5-ingreso-urgencia-alta.png
-    └── video-demo.mp4                              # Demostración en video, 3 min
+    └── Test de Estrés_prueba-5-ingreso-urgencia-alta.png
 ```
+
+El video demo (3 min) no se aloja en el repositorio — GitHub no lo reproducía correctamente — sino en Google Drive: ver enlace en la tabla de [Enlaces](#enlaces).
